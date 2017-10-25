@@ -23,29 +23,59 @@ RSpec.describe Note, type: :model do
   end
 
   it 'is invalid without a message' do
-  	note = Note.new(message: nil)
-  	note.valid?
-  	expect(note.errors[:message]).to include("can't be blank")
+    note = Note.create(
+      message: nil
+      )
+    note.valid?
+    expect(note.errors[:message]).to include("can't be blank")
   end
 
-  it "returns notes that match the search term" do
+  describe '#search' do
+    # Second block 
+    before do
+      @note_1 = @project.notes.create(
+        message: "This is my first note.",
+        user: @user
+        )
+      @note_2 = @project.notes.create(
+        message: "This is my second note.",
+        user: @user
+        )
+      @note_3 = @project.notes.create(
+        message: "First, preheat the oven",
+        user: @user
+        )
+    end
 
-  	
-  	note_1 = project.notes.create(
-  		message: "This is my first note.",
-  		user: user,
-  		)
+    context 'when a match is found' do
 
-  	note_2 = project.notes.create(
-  		message: "This is my second note",
-  		user: user,
-  		)
+      it "returns notes that match the search term" do
 
-  	note_3 = project.notes.create(
-  		message: "Preheat the oven.",
-  		user: user
-  		)
+        expect(Note.search("First")).to include(@note_1, @note_3)
+      end    
 
-  	expect(Note.search("message")).to be_empty
-  end
+    end
+
+    context 'when a match is not found' do
+      it 'returns an empty array if notes do not match search term' do
+
+        expect(Note.search("puppies")).to be_empty
+      end
+    end
+
+  end # => END OF DESCRIBE BLOCK
+
 end
+
+
+
+
+
+
+
+
+
+
+
+
+

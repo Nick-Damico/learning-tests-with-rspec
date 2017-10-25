@@ -2,6 +2,8 @@ class Note < ApplicationRecord
   belongs_to :project
   belongs_to :user
 
+  validates :message, presence: true
+
   delegate :name, to: :user, prefix: true
 
   scope :search, ->(term) {
